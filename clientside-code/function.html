@@ -1,0 +1,42 @@
+<button capi_action data_capi_action="Custom API Event"></button>
+
+<script>
+//CAPI click function
+$('[capi_action]').click(function(e){
+      
+      // Heroku Server URL
+      var fb_capi_server= 'https://facebook-events-api.herokuapp.com';
+
+      // Pulling Event String Name (we can come up with a naming convention for these to make reading data easier)
+      var fb_capi_action = e.target.attributes.data_capi_action.nodeValue;
+
+      var settings = {
+        "url": fb_capi_server,
+        "method": "POST",
+        "timeout": 0,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "data": JSON.stringify({
+          "data": [
+            {
+              "event_name": fb_capi_action,
+              "event_time": Math.round(new Date().getTime() / 1000),
+              "action_source": "website",
+              "event_source_url": window.location.href,
+              "user_data": {
+                "client_user_agent": navigator.userAgent,
+                "client_ip_address": "1.2.3.4",
+              }
+            }
+          ]
+        }),
+      };
+
+      $.ajax(settings).done(function (response) {
+        console.log(response);
+      });
+
+});
+
+</script>
